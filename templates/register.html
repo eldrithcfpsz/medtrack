@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-logo">
+            <div class="logo-icon"><i class="ti ti-pill" aria-hidden="true"></i></div>
+            <div class="logo-text">Med<span>Track</span></div>
+        </div>
+        <div class="auth-subtitle">Create your MedTrack account</div>
+        {% if error %}<p class="error">{{ error }}</p>{% endif %}
+        <form method="POST">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" placeholder="Choose a username" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Choose a password" required>
+            </div>
+            <button class="btn-submit" style="width:100%; padding:12px;" type="submit">Create Account</button>
+        </form>
+        <div class="auth-footer">Already have an account? <a href="{{ url_for('login') }}">Sign in</a></div>
+    </div>
+</div>
+{% endblock %}

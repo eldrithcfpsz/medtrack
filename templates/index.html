@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <div>
+            <div class="page-title">My Medications</div>
+            <div class="page-sub">{{ medications|length }} active medication(s)</div>
+        </div>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-label">Total</div>
+            <div class="stat-value ok">{{ medications|length }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Low Stock</div>
+            <div class="stat-value danger">{{ low_stock|length }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Status</div>
+            <div class="stat-value" style="font-size:16px; padding-top:6px;">
+                {% if low_stock %}⚠️ Needs attention{% else %}✅ All good{% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if low_stock %}
+    <div class="alert">
+        <i class="ti ti-alert-triangle" style="font-size:16px; color:#f9a825" aria-hidden="true"></i>
+        Low stock warning —
+        {% for m in low_stock %}{{ m['name'] }} ({{ m['stock'] }} left){% if not loop.last %}, {% endif %}{% endfor %}
+        need restocking soon.
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">Medication List</span>
+        </div>
+        {% if medications %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Medication</th>
+                    <th>Dosage</th>
+                    <th>Frequency</th>
+                    <th>Stock</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for med in medications %}
+                <tr>
+                    <td><div class="med-name">{{ med['name'] }}</div></td>
+                    <td>{{ med['dosage'] }}</td>
+                    <td>{{ med['frequency'] }}× daily</td>
+                    <td>
+                        {% if med['stock'] < 5 %}
+                        <span class="pill pill-low"><i class="ti ti-alert-triangle" style="font-size:11px" aria-hidden="true"></i> {{ med['stock'] }} pills</span>
+                        {% else %}
+                        <span class="pill pill-ok"><i class="ti ti-check" style="font-size:11px" aria-hidden="true"></i> {{ med['stock'] }} pills</span>
+                        {% endif %}
+                    </td>
+                    <td style="color:#aaa">{{ med['notes'] or '—' }}</td>
+                    <td class="actions">
+                        <a class="btn-action take" href="{{ url_for('take', med_id=med['id']) }}"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i> Take</a>
+                        <a class="btn-action" href="{{ url_for('edit', med_id=med['id']) }}"><i class="ti ti-edit" style="font-size:12px" aria-hidden="true"></i> Edit</a>
+                        <a class="btn-action danger" href="{{ url_for('delete', med_id=med['id']) }}"><i class="ti ti-trash" style="font-size:12px" aria-hidden="true"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div style="padding: 48px; text-align: center; color: #aaa;">
+            <i class="ti ti-pill" style="font-size:40px; display:block; margin-bottom:12px" aria-hidden="true"></i>
+            No medications yet. <a href="{{ url_for('add') }}" style="color:#2e7d32;">Add your first one</a>
+        </div>
+        {% endif %}
+        <div class="footer-bar">made by Eldritch</div>
+    </div>
+</div>
+{% endblock %}

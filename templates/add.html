@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <div>
+            <div class="page-title">Add Medication</div>
+            <div class="page-sub">Fill in the details below</div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">New Medication</span>
+        </div>
+        <div class="card-body">
+            {% if error %}<p class="error">{{ error }}</p>{% endif %}
+            <form method="POST">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Medication Name</label>
+                        <input type="text" name="name" placeholder="e.g. Aspirin" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Dosage</label>
+                        <input type="text" name="dosage" placeholder="e.g. 500mg" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Frequency (doses per day)</label>
+                        <input type="number" name="frequency" placeholder="e.g. 2" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Stock (number of pills)</label>
+                        <input type="number" name="stock" placeholder="e.g. 30" min="0" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Notes (optional)</label>
+                    <textarea name="notes" rows="3" placeholder="e.g. Take after meals"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-submit" type="submit">Add Medication</button>
+                    <a class="btn-cancel" href="{{ url_for('index') }}">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

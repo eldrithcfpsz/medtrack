@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <div>
+            <div class="page-title">Edit Medication</div>
+            <div class="page-sub">Update the details below</div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">{{ med['name'] }}</span>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Medication Name</label>
+                        <input type="text" name="name" value="{{ med['name'] }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Dosage</label>
+                        <input type="text" name="dosage" value="{{ med['dosage'] }}" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Frequency (doses per day)</label>
+                        <input type="number" name="frequency" value="{{ med['frequency'] }}" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Stock</label>
+                        <input type="number" name="stock" value="{{ med['stock'] }}" min="0" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea name="notes" rows="3">{{ med['notes'] or '' }}</textarea>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-submit" type="submit">Save Changes</button>
+                    <a class="btn-cancel" href="{{ url_for('index') }}">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

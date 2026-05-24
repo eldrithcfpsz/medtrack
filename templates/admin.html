@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <div>
+            <div class="page-title">Admin Panel</div>
+            <div class="page-sub">System overview</div>
+        </div>
+    </div>
+
+    <div class="stats" style="grid-template-columns: repeat(4, 1fr);">
+        <div class="stat-card">
+            <div class="stat-label">Total Users</div>
+            <div class="stat-value ok">{{ total_users }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Total Medications</div>
+            <div class="stat-value ok">{{ total_meds }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Low Stock Alerts</div>
+            <div class="stat-value danger">{{ low_stock_meds|length }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Avg Meds / User</div>
+            <div class="stat-value">
+                {% if total_users > 0 %}{{ (total_meds / total_users)|round(1) }}{% else %}0{% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if low_stock_meds %}
+    <div class="alert">
+        <i class="ti ti-alert-triangle" style="font-size:16px; color:#f9a825" aria-hidden="true"></i>
+        <strong>{{ low_stock_meds|length }} medication(s)</strong> are running low across all users.
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">👤 Registered Users</span>
+            <span style="font-size:12px; color:#aaa;">{{ total_users }} total</span>
+        </div>
+        {% if users %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Full Name</th>
+                    <th>Age</th>
+                    <th>Height</th>
+                    <th>Weight</th>
+                    <th>Medications</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td style="color:#aaa">#{{ user['id'] }}</td>
+                    <td><strong>{{ user['username'] }}</strong></td>
+                    <td>{% if user['first_name'] %}{{ user['first_name'] }} {{ user['last_name'] }}{% else %}<span style="color:#ccc">—</span>{% endif %}</td>
+                    <td>{{ user['age'] or '—' }}</td>
+                    <td>{{ user['height'] ~ ' cm' if user['height'] else '—' }}</td>
+                    <td>{{ user['weight'] ~ ' kg' if user['weight'] else '—' }}</td>
+                    <td><span class="pill pill-ok">{{ medications | selectattr('user_id', 'equalto', user['id']) | list | length }} meds</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div style="padding:32px; text-align:center; color:#aaa;">No users registered yet.</div>
+        {% endif %}
+        <div class="footer-bar">made by Eldritch</div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">💊 All Medications</span>
+            <span style="font-size:12px; color:#aaa;">{{ total_meds }} total</span>
+        </div>
+        {% if medications %}
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Medication</th>
+                    <th>Dosage</th>
+                    <th>Frequency</th>
+                    <th>Stock</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for med in medications %}
+                <tr>
+                    <td><span style="background:#e8f5e9; color:#2e7d32; padding:2px 8px; border-radius:99px; font-size:12px;">{{ med['username'] }}</span></td>
+                    <td><div class="med-name">{{ med['name'] }}</div></td>
+                    <td>{{ med['dosage'] }}</td>
+                    <td>{{ med['frequency'] }}× daily</td>
+                    <td>
+                        {% if med['stock'] < 5 %}
+                        <span class="pill pill-low"><i class="ti ti-alert-triangle" style="font-size:11px" aria-hidden="true"></i> {{ med['stock'] }} pills</span>
+                        {% else %}
+                        <span class="pill pill-ok"><i class="ti ti-check" style="font-size:11px" aria-hidden="true"></i> {{ med['stock'] }} pills</span>
+                        {% endif %}
+                    </td>
+                    <td style="color:#aaa">{{ med['notes'] or '—' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div style="padding:32px; text-align:center; color:#aaa;">No medications recorded yet.</div>
+        {% endif %}
+        <div class="footer-bar">made by Eldrithc</div>
+    </div>
+</div>
+{% endblock %}

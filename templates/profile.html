@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <div>
+            <div class="page-title">Profile</div>
+            <div class="page-sub">Manage your personal information</div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">Personal Information</span>
+        </div>
+        <div class="card-body">
+            <div class="profile-header">
+                <div class="profile-avatar">{{ session['username'][:2].upper() }}</div>
+                <div>
+                    <div class="profile-name">
+                        {% if user['first_name'] %}{{ user['first_name'] }} {{ user['last_name'] }}{% else %}{{ session['username'] }}{% endif %}
+                    </div>
+                    <div class="profile-username">@{{ session['username'] }}</div>
+                </div>
+            </div>
+            <hr class="divider">
+            <form method="POST">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" name="first_name" value="{{ user['first_name'] or '' }}" placeholder="Enter first name">
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" name="last_name" value="{{ user['last_name'] or '' }}" placeholder="Enter last name">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Age</label>
+                        <input type="number" name="age" value="{{ user['age'] or '' }}" placeholder="e.g. 25" min="1" max="120">
+                    </div>
+                    <div class="form-group">
+                        <label>Height (cm)</label>
+                        <input type="number" name="height" value="{{ user['height'] or '' }}" placeholder="e.g. 175" min="50" max="250">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Weight (kg)</label>
+                        <input type="number" name="weight" value="{{ user['weight'] or '' }}" placeholder="e.g. 70" min="10" max="300">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-submit" type="submit">Save Changes</button>
+                    <a class="btn-cancel" href="{{ url_for('index') }}">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

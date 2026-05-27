@@ -5,7 +5,16 @@ from logic import is_stock_low, is_valid_medication
 app = Flask(__name__)
 app.secret_key = 'medtrack_secret_key'
 
+@app.before_request
+def check_session():
+    if 'user_id' in session:
+        db = get_db()
+        user = db.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
+        db.close()
+        if not user:
+            session.clear()
 # -------------------- AUTH --------------------
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

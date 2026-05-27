@@ -33,5 +33,6 @@ def init_db():
             FOREIGN KEY (user_id) REFERENCES users(id)
         )
     ''')
+    conn.execute("INSERT OR IGNORE INTO users (username, password) VALUES ('admin', 'admin')")
     conn.commit()
     conn.close()

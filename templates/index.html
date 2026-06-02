@@ -67,7 +67,7 @@
                     <td class="actions">
                         <a class="btn-action take" href="{{ url_for('take', med_id=med['id']) }}"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i> Take</a>
                         <a class="btn-action" href="{{ url_for('edit', med_id=med['id']) }}"><i class="ti ti-edit" style="font-size:12px" aria-hidden="true"></i> Edit</a>
-                        <a class="btn-action danger" href="{{ url_for('delete', med_id=med['id']) }}"><i class="ti ti-trash" style="font-size:12px" aria-hidden="true"></i></a>
+                        <a class="btn-action danger" href="{{ url_for('delete', med_id=med['id']) }}" onclick="return askDelete(this.href);"><i class="ti ti-trash" style="font-size:12px" aria-hidden="true"></i></a>
                     </td>
                 </tr>
                 {% endfor %}

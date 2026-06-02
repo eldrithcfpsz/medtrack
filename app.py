@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from database import get_db, init_db
-from logic import is_stock_low, is_valid_medication
+from logic import is_stock_low, is_valid_medication, is_valid_password, MIN_PASSWORD_LENGTH, ALLOWED_DOSAGES_MG
 
 app = Flask(__name__)
 app.secret_key = 'medtrack_secret_key'
@@ -25,6 +25,8 @@ def register():
         password = request.form['password']
         if not username or not password:
             return render_template('register.html', error='Please fill in all fields.')
+        if not is_valid_password(password):
+            return render_template('register.html', error=f'Password must be at least {MIN_PASSWORD_LENGTH} characters.')
         db = get_db()
         try:
             db.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, password))
@@ -150,7 +152,7 @@ def add():
         stock = request.form.get('stock', '')
         notes = request.form.get('notes', '')
         if not is_valid_medication(name, dosage, frequency, stock):
-            return render_template('add.html', error='Please fill in all required fields correctly.')
+            return render_template('add.html', error='Please fill in all required fields correctly.', dosages=ALLOWED_DOSAGES_MG)
         db = get_db()
         db.execute(
             'INSERT INTO medications (user_id, name, dosage, frequency, stock, notes) VALUES (?, ?, ?, ?, ?, ?)',
@@ -159,7 +161,7 @@ def add():
         db.commit()
         db.close()
         return redirect(url_for('index'))
-    return render_template('add.html')
+    return render_template('add.html', dosages=ALLOWED_DOSAGES_MG)
 
 @app.route('/edit/<int:med_id>', methods=['GET', 'POST'])
 def edit(med_id):
@@ -182,7 +184,7 @@ def edit(med_id):
         stock = request.form.get('stock', '')
         notes = request.form.get('notes', '')
         if not is_valid_medication(name, dosage, frequency, stock):
-            return render_template('edit.html', med=med, error='Please fill in all required fields correctly.')
+            return render_template('edit.html', med=med, error='Please fill in all required fields correctly.', dosages=ALLOWED_DOSAGES_MG)
         db.execute(
             'UPDATE medications SET name=?, dosage=?, frequency=?, stock=?, notes=? WHERE id=? AND user_id=?',
             (name, dosage, int(frequency), int(stock), notes, med_id, session['user_id'])
@@ -191,7 +193,7 @@ def edit(med_id):
         db.close()
         return redirect(url_for('index'))
     db.close()
-    return render_template('edit.html', med=med)
+    return render_template('edit.html', med=med, dosages=ALLOWED_DOSAGES_MG)
 
 @app.route('/delete/<int:med_id>')
 def delete(med_id):
